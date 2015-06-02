@@ -1,0 +1,24 @@
+server:
+  port:
+    9001
+zuul:
+  routes:
+    initializr:
+      url: http://start.spring.io
+
+logging:
+  level:
+    com.netflix.discovery: 'OFF'
+    org.springframework.cloud: 'DEBUG'
+
+---
+spring:
+  profiles: local
+zuul:
+  routes:
+    aggregator: 
+      url: http://localhost:9000
+    counter:
+      url: http://localhost:8081
+    voter:
+      url: http://localhost:8080
