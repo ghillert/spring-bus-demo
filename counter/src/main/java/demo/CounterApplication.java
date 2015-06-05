@@ -15,6 +15,9 @@ import org.springframework.boot.actuate.metrics.jmx.JmxMetricWriter;
 import org.springframework.boot.actuate.metrics.repository.redis.RedisMetricRepository;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.bus.runner.EnableMessageBus;
+import org.springframework.bus.runner.adapter.DiscoveryClientChannelLocator;
+import org.springframework.bus.runner.adapter.InputChannel;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -41,6 +44,12 @@ public class CounterApplication {
 	private ElectionRepository repository;
 
 	@Bean
+	@InputChannel
+	public DiscoveryClientChannelLocator inputChannelLocator(DiscoveryClient discoveryClient) {
+		return new DiscoveryClientChannelLocator(discoveryClient, "voter");
+	}
+
+	@Bean
 	public MessageChannel input() {
 		return new DirectChannel();
 	}
@@ -48,10 +57,12 @@ public class CounterApplication {
 	@ServiceActivator(inputChannel = "input")
 	@Transactional
 	public void accept(Vote vote) {
+
 		logger.info("Received: " + vote);
-		Election election = repository.findOne(vote.getElection());
+
+		Election election = this.repository.findOne(vote.getElection());
 		if (election == null) {
-			election = repository.save(new Election());
+			election = this.repository.save(new Election());
 		}
 		Candidate candidate = election.getCandidate(vote.getCandidate());
 		if (candidate == null) {
