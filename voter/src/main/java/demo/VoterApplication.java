@@ -47,7 +47,7 @@ public class VoterApplication {
 	@RequestMapping(value="/votes", method=RequestMethod.POST)
 	public void accept(@RequestBody Vote vote) {
 		logger.info("Sending: " + vote);
-		voter.vote(vote);
+		this.voter.vote(vote);
 	}
 
 	@Bean

@@ -24,7 +24,7 @@
 		<spring-boot.version>1.3.0.BUILD-SNAPSHOT</spring-boot.version>
 		<java.version>1.7</java.version>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -50,7 +50,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-developer-tools</artifactId>
 			<optional>true</optional>
-	</dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>bootstrap</artifactId>
@@ -84,6 +84,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<executable>false</executable>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
