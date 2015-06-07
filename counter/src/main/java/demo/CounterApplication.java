@@ -15,11 +15,13 @@ import org.springframework.boot.actuate.metrics.jmx.JmxMetricWriter;
 import org.springframework.boot.actuate.metrics.repository.redis.RedisMetricRepository;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.bus.runner.EnableMessageBus;
-import org.springframework.bus.runner.adapter.DiscoveryClientChannelLocator;
-import org.springframework.bus.runner.adapter.InputChannel;
+import org.springframework.bus.runner.adapter.Upstream;
+import org.springframework.bus.runner.adapter.discovery.DiscoveryClientChannelLocator;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -43,10 +45,17 @@ public class CounterApplication {
 	@Autowired
 	private ElectionRepository repository;
 
-	@Bean
-	@InputChannel
-	public DiscoveryClientChannelLocator inputChannelLocator(DiscoveryClient discoveryClient) {
-		return new DiscoveryClientChannelLocator(discoveryClient, "voter");
+	@Configuration
+	@Profile("discovery")
+	protected static class DiscoveryClientConfiguration {
+
+		@Bean
+		@Upstream
+		public DiscoveryClientChannelLocator inputChannelLocator(
+				DiscoveryClient discoveryClient) {
+			return new DiscoveryClientChannelLocator(discoveryClient, "voter");
+		}
+
 	}
 
 	@Bean
@@ -76,8 +85,8 @@ public class CounterApplication {
 	@ExportMetricWriter
 	public RedisMetricRepository redisMetricWriter(
 			RedisConnectionFactory connectionFactory) {
-		return new RedisMetricRepository(connectionFactory, this.export.getRedis().getPrefix(),
-				this.export.getRedis().getKey());
+		return new RedisMetricRepository(connectionFactory, this.export.getRedis()
+				.getPrefix(), this.export.getRedis().getKey());
 	}
 
 	@Bean

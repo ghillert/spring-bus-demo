@@ -7,4 +7,16 @@ logging:
   level:
     com.netflix.discovery: 'OFF'
     org.springframework.cloud: 'DEBUG'
-    
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+  client:
+    registryFetchIntervalSeconds: 10
+
+---
+# This bit is not needed in the "discovery" profile
+spring:
+  profiles: default
+  bus:
+    group: election
+    index: 1

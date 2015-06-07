@@ -6,3 +6,8 @@ spring:
 logging:
   level:
     com.netflix.discovery: 'OFF'
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+  client:
+    registryFetchIntervalSeconds: 10
