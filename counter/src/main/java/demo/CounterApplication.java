@@ -1,7 +1,5 @@
 package demo;
 
-import lombok.Data;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +68,11 @@ public class CounterApplication {
 	}
 
 	@Bean
+	public IntegrationMBeanExporter mbeanExporter () {
+		return new IntegrationMBeanExporter();
+	}
+
+	@Bean
 	@ExportMetricWriter
 	public JmxMetricWriter jmxMetricWriter(
 			@Qualifier("mbeanExporter") MBeanExporter exporter) {
@@ -89,9 +92,27 @@ public class CounterApplication {
 
 }
 
-@Data
 class Vote {
 	private long election;
 	private long candidate;
 	private int score;
+
+	public long getElection() {
+		return election;
+	}
+	public void setElection(long election) {
+		this.election = election;
+	}
+	public long getCandidate() {
+		return candidate;
+	}
+	public void setCandidate(long candidate) {
+		this.candidate = candidate;
+	}
+	public int getScore() {
+		return score;
+	}
+	public void setScore(int score) {
+		this.score = score;
+	}
 }
